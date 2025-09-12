@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Gemini API</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f0fdf4;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Test Gemini AI API</h1>
+        <p>Click the button below to test if the Gemini AI API is working:</p>
+        
+        <button onclick="testGemini()">Test Gemini API</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const GEMINI_API_KEY = 'AIzaSyC_UIdJTeV9kIM_obGqBbPxs09j1vp3X-w';
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+
+        async function testGemini() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Testing Gemini API...';
+
+            try {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: 'Hello! Can you help me with a simple health question? What are some basic tips for staying hydrated?'
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            topK: 40,
+                            topP: 0.95,
+                            maxOutputTokens: 1024,
+                        },
+                        safetySettings: [
+                            {
+                                category: "HARM_CATEGORY_HARASSMENT",
+                                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                            },
+                            {
+                                category: "HARM_CATEGORY_HATE_SPEECH",
+                                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                            },
+                            {
+                                category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                            },
+                            {
+                                category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Gemini API Response:', data);
+
+                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    resultDiv.innerHTML = `
+                        <h3>✅ Gemini API is working!</h3>
+                        <p><strong>AI Response:</strong></p>
+                        <div style="background: #e0f2fe; padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">
+                            ${aiResponse}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3>⚠️ Unexpected response format</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                console.error('Gemini API Error:', error);
+                resultDiv.innerHTML = `
+                    <h3>❌ Gemini API Error</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>Please check:</p>
+                    <ul>
+                        <li>API key is correct</li>
+                        <li>Internet connection is working</li>
+                        <li>CORS is properly configured</li>
+                    </ul>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
