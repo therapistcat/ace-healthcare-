@@ -502,33 +502,7 @@ body {
   font-weight: bold;
 }
 
-/* Language Switcher */
-.lang-switcher {
-  background: white;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
-.lang-switcher button {
-  padding: 0.5rem 1rem;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.lang-switcher button.active {
-  background: var(--primary-green);
-  color: white;
-}
-
-.lang-switcher button:hover:not(.active) {
-  background: var(--accent-green);
-  color: var(--primary-green);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

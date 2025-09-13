@@ -499,4 +499,56 @@ router.delete('/account', protect, async (req, res) => {
   }
 });
 
+// @desc    Get all doctors
+// @route   GET /api/users/doctors
+// @access  Private
+router.get('/doctors', protect, async (req, res) => {
+  try {
+    const doctors = await User.find({
+      role: 'doctor',
+      isActive: true
+    })
+    .select('name email phone specialization')
+    .sort({ name: 1 });
+
+    res.json(
+      createSuccessResponse(
+        'Doctors retrieved successfully',
+        { data: doctors }
+      )
+    );
+  } catch (error) {
+    console.error('Get doctors error:', error);
+    res.status(500).json(
+      createErrorResponse('Failed to retrieve doctors')
+    );
+  }
+});
+
+// @desc    Get all patients (for doctors)
+// @route   GET /api/users/patients
+// @access  Private (Doctor only)
+router.get('/patients', protect, authorize('doctor'), async (req, res) => {
+  try {
+    const patients = await User.find({
+      role: 'patient',
+      isActive: true
+    })
+    .select('name email phone age')
+    .sort({ name: 1 });
+
+    res.json(
+      createSuccessResponse(
+        'Patients retrieved successfully',
+        { data: patients }
+      )
+    );
+  } catch (error) {
+    console.error('Get patients error:', error);
+    res.status(500).json(
+      createErrorResponse('Failed to retrieve patients')
+    );
+  }
+});
+
 module.exports = router;

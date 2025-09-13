@@ -597,90 +597,207 @@ export default function Home() {
 
           <div ref={featuresRef} style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-            gap: '2.5rem',
-            marginBottom: '4rem'
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: isMobile ? '1.5rem' : '2rem',
+            marginBottom: isMobile ? '2.5rem' : '3rem'
           }}>
             {/* Feature 1 */}
             <div style={{
               background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
-              padding: '3rem',
-              borderRadius: '24px',
+              padding: isMobile ? '2rem' : '2.5rem',
+              borderRadius: '20px',
               border: '2px solid #bbf7d0',
               transition: 'transform 0.3s ease',
               textAlign: 'center'
             }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-8px)'}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-6px)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>📊</div>
+              <div style={{
+                width: '4rem',
+                height: '4rem',
+                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.5rem'
+              }}>
+                <img
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'/%3E%3C/svg%3E"
+                  alt="Health Tracking"
+                  style={{ width: '2rem', height: '2rem' }}
+                />
+              </div>
               <h3 style={{
-                fontSize: '1.5rem',
+                fontSize: isMobile ? '1.2rem' : '1.4rem',
                 fontWeight: '700',
                 color: '#1f2937',
                 marginBottom: '1rem'
               }}>
-                {t('feature1Title') || 'Health Tracking'}
+                {t('feature1Title') || 'स्वास्थ्य ट्रैकिंग'}
               </h3>
               <p style={{
-                fontSize: '1.1rem',
+                fontSize: isMobile ? '1rem' : '1.1rem',
                 color: '#6b7280',
                 lineHeight: '1.6'
               }}>
-                {t('feature1Description') || 'Monitor vital signs, track medications, and visualize your health trends with interactive charts and insights.'}
+                {t('feature1Description') || 'वाइटल साइन्स की निगरानी करें, दवाइयों को ट्रैक करें, और इंटरैक्टिव चार्ट और अंतर्दृष्टि के साथ अपने स्वास्थ्य रुझानों को देखें।'}
               </p>
             </div>
 
             {/* Feature 2 */}
             <div style={{
               background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-              padding: '3rem',
-              borderRadius: '24px',
+              padding: isMobile ? '2rem' : '2.5rem',
+              borderRadius: '20px',
               border: '2px solid #fcd34d',
               transition: 'transform 0.3s ease',
               textAlign: 'center'
             }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-8px)'}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-6px)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>👨‍👩‍👧‍👦</div>
+              <div style={{
+                width: '4rem',
+                height: '4rem',
+                background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.5rem'
+              }}>
+                <img
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'/%3E%3C/svg%3E"
+                  alt="Family Care"
+                  style={{ width: '2rem', height: '2rem' }}
+                />
+              </div>
               <h3 style={{
-                fontSize: '1.5rem',
+                fontSize: isMobile ? '1.2rem' : '1.4rem',
                 fontWeight: '700',
                 color: '#1f2937',
                 marginBottom: '1rem'
               }}>
-                {t('feature2Title') || 'Family Care'}
+                {t('feature2Title') || 'पारिवारिक देखभाल'}
               </h3>
               <p style={{
-                fontSize: '1.1rem',
+                fontSize: isMobile ? '1rem' : '1.1rem',
                 color: '#6b7280',
                 lineHeight: '1.6'
               }}>
-                {t('feature2Description') || 'Connect with family members and caregivers. Share health data securely and get alerts for medication reminders.'}
+                {t('feature2Description') || 'परिवार के सदस्यों और देखभालकर्ताओं से जुड़ें। स्वास्थ्य डेटा सुरक्षित रूप से साझा करें और दवा अनुस्मारक के लिए अलर्ट प्राप्त करें।'}
               </p>
             </div>
 
             {/* Feature 3 */}
             <div style={{
               background: 'linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%)',
-              padding: '3rem',
-              borderRadius: '24px',
+              padding: isMobile ? '2rem' : '2.5rem',
+              borderRadius: '20px',
               border: '2px solid #81d4fa',
               transition: 'transform 0.3s ease',
               textAlign: 'center'
             }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-8px)'}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-6px)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🤖</div>
+              <div style={{
+                width: '4rem',
+                height: '4rem',
+                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.5rem'
+              }}>
+                <img
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'/%3E%3C/svg%3E"
+                  alt="AI Assistant"
+                  style={{ width: '2rem', height: '2rem' }}
+                />
+              </div>
               <h3 style={{
-                fontSize: '1.5rem',
+                fontSize: isMobile ? '1.2rem' : '1.4rem',
                 fontWeight: '700',
                 color: '#1f2937',
                 marginBottom: '1rem'
               }}>
-                {t('feature3Title') || 'AI Assistant'}
+                {t('feature3Title') || 'AI सहायक'}
               </h3>
               <p style={{
-              
+                fontSize: isMobile ? '1rem' : '1.1rem',
+                color: '#6b7280',
+                lineHeight: '1.6'
+              }}>
+                {t('feature3Description') || 'हमारे AI-संचालित सहायक से तुरंत स्वास्थ्य सलाह, दवा अनुस्मारक, और व्यक्तिगत कल्याण सुझाव प्राप्त करें।'}
+              </p>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div style={{
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+            padding: isMobile ? '2.5rem 1.5rem' : '3rem 2rem',
+            borderRadius: '20px',
+            border: '2px solid #e2e8f0'
+          }}>
+            <h3 style={{
+              fontSize: isMobile ? '1.5rem' : '2rem',
+              fontWeight: '800',
+              color: '#1f2937',
+              marginBottom: '1rem'
+            }}>
+              {t('ctaTitle') || 'अपनी स्वास्थ्य यात्रा को बदलने के लिए तैयार हैं?'}
+            </h3>
+            <p style={{
+              fontSize: isMobile ? '1rem' : '1.1rem',
+              color: '#6b7280',
+              marginBottom: '2rem',
+              maxWidth: '500px',
+              margin: '0 auto 2rem',
+              lineHeight: '1.6'
+            }}>
+              {t('ctaDescription') || 'हजारों परिवारों के साथ जुड़ें जो पहले से ही Healthcare+ का उपयोग करके अपने स्वास्थ्य का बेहतर प्रबंधन कर रहे हैं।'}
+            </p>
+            <Link
+              to="/signup"
+              style={{
+                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                color: 'white',
+                padding: isMobile ? '1rem 2rem' : '1.2rem 3rem',
+                borderRadius: '16px',
+                textDecoration: 'none',
+                fontSize: isMobile ? '1.1rem' : '1.2rem',
+                fontWeight: '700',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.3s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 15px 25px -3px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+              }}
+            >
+              <img
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/%3E%3C/svg%3E"
+                alt="Start"
+                style={{ width: '1.2rem', height: '1.2rem' }}
+              />
+              {t('startToday') || 'आज ही अपनी स्वास्थ्य यात्रा शुरू करें'}
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

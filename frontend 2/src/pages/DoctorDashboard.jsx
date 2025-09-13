@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import HealthCharts from '../components/HealthCharts';
+import DoctorChatbot from '../components/DoctorChatbot';
+import AppointmentScheduler from '../components/AppointmentScheduler';
 
 export default function DoctorDashboard() {
   const { t } = useTranslation();
@@ -12,6 +14,8 @@ export default function DoctorDashboard() {
   const [loading, setLoading] = useState(true);
   const [patientVitals, setPatientVitals] = useState([]);
   const [patientMedications, setPatientMedications] = useState([]);
+
+  const [patientData, setPatientData] = useState(null);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || 'null');
@@ -86,10 +90,11 @@ export default function DoctorDashboard() {
   };
 
   const tabs = [
-    { id: 'patients', name: 'My Patients', icon: '👥' },
-    { id: 'analytics', name: 'Patient Analytics', icon: '📊' },
-    { id: 'alerts', name: 'Health Alerts', icon: '🚨' },
-    { id: 'appointments', name: 'Appointments', icon: '📅' }
+    { id: 'patients', name: t('patientList') || 'My Patients', icon: '👥' },
+    { id: 'analytics', name: t('analytics') || 'Patient Analytics', icon: '📊' },
+    { id: 'alerts', name: t('healthAlerts') || 'Health Alerts', icon: '🚨' },
+    { id: 'appointments', name: t('appointments') || 'Appointments', icon: '📅' },
+    { id: 'emergency', name: t('emergency') || 'Emergency', icon: '🆘' }
   ];
 
   if (!user) {
@@ -145,7 +150,7 @@ export default function DoctorDashboard() {
         background: 'white',
         borderBottom: '1px solid #e5e7eb',
         position: 'sticky',
-        top: '4rem',
+        top: '5rem',
         zIndex: 10
       }}>
         <div style={{
@@ -529,20 +534,149 @@ export default function DoctorDashboard() {
         )}
 
         {activeTab === 'appointments' && (
+          <AppointmentScheduler userRole="doctor" />
+        )}
+
+        {activeTab === 'emergency' && (
           <div style={{
             background: 'white',
             borderRadius: '12px',
             padding: '2rem',
-            textAlign: 'center',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
           }}>
-            <h3 style={{ color: '#1f2937', marginBottom: '1rem' }}>📅 Appointments</h3>
-            <p style={{ color: '#6b7280' }}>
-              Appointment scheduling system coming soon. Integrate with calendar and booking systems.
-            </p>
+            <h3 style={{
+              color: '#1f2937',
+              marginBottom: '2rem',
+              fontSize: '1.5rem',
+              fontWeight: '700'
+            }}>
+              🆘 {t('emergencyServices') || 'Emergency Services'}
+            </h3>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '1.5rem'
+            }}>
+
+
+              {/* Emergency Contacts */}
+              <div style={{
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%)',
+                border: '2px solid #fed7aa',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📞</div>
+                <h4 style={{
+                  color: '#f59e0b',
+                  marginBottom: '1rem',
+                  fontSize: '1.2rem',
+                  fontWeight: '600'
+                }}>
+                  {t('emergencyContacts') || 'Emergency Contacts'}
+                </h4>
+                <p style={{
+                  color: '#6b7280',
+                  marginBottom: '1.5rem',
+                  fontSize: '0.9rem'
+                }}>
+                  {t('quickAccessEmergencyNumbers') || 'Quick access to emergency numbers and patient emergency contacts'}
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => window.open('tel:911')}
+                    style={{
+                      background: '#dc2626',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '0.5rem 1rem',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      fontWeight: '600'
+                    }}
+                  >
+                    🚨 {t('call911') || 'Call 911'}
+                  </button>
+                  <button
+                    onClick={() => window.open('tel:+1-800-POISON')}
+                    style={{
+                      background: '#f59e0b',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '0.5rem 1rem',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                      fontWeight: '600'
+                    }}
+                  >
+                    ☠️ {t('poisonControl') || 'Poison Control'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Patient Emergency Alerts */}
+              <div style={{
+                background: 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)',
+                border: '2px solid #bfdbfe',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚨</div>
+                <h4 style={{
+                  color: '#2563eb',
+                  marginBottom: '1rem',
+                  fontSize: '1.2rem',
+                  fontWeight: '600'
+                }}>
+                  {t('patientAlerts') || 'Patient Alerts'}
+                </h4>
+                <p style={{
+                  color: '#6b7280',
+                  marginBottom: '1.5rem',
+                  fontSize: '0.9rem'
+                }}>
+                  {t('monitorPatientEmergencyAlerts') || 'Monitor and respond to patient emergency alerts and critical health notifications'}
+                </p>
+                <div style={{
+                  background: '#fee2e2',
+                  border: '1px solid #fecaca',
+                  borderRadius: '6px',
+                  padding: '0.75rem',
+                  marginBottom: '1rem'
+                }}>
+                  <div style={{
+                    color: '#dc2626',
+                    fontSize: '0.8rem',
+                    fontWeight: '600'
+                  }}>
+                    ⚠️ 2 Active Alerts
+                  </div>
+                  <div style={{
+                    color: '#6b7280',
+                    fontSize: '0.7rem',
+                    marginTop: '0.25rem'
+                  }}>
+                    High BP readings, Missed medications
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Doctor AI Chatbot */}
+      <DoctorChatbot
+        selectedPatient={selectedPatient}
+        patientData={patientData}
+      />
+
+
     </div>
   );
 }

@@ -43,13 +43,18 @@ const allowedOrigins = [
 ].filter(Boolean);
 app.use(cors({
   origin: (origin, callback) => {
+    console.log('CORS request from origin:', origin);
     if (!origin) return callback(null, true); // allow server-to-server / curl
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      console.log('CORS allowed for origin:', origin);
+      return callback(null, true);
+    }
+    console.log('CORS blocked for origin:', origin);
     return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Body parsing middleware

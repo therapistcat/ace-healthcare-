@@ -12,6 +12,7 @@ export default function FamilyDashboard() {
   const [loading, setLoading] = useState(true);
   const [alerts, setAlerts] = useState([]);
 
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || 'null');
     setUser(userData);
@@ -169,7 +170,7 @@ export default function FamilyDashboard() {
         background: 'white',
         borderBottom: '1px solid #e5e7eb',
         position: 'sticky',
-        top: '4rem',
+        top: '5rem',
         zIndex: 10
       }}>
         <div style={{
@@ -531,8 +532,10 @@ export default function FamilyDashboard() {
               color: '#1f2937',
               marginBottom: '1.5rem'
             }}>
-              🚨 Emergency Contacts
+              🚨 {t('emergencyServices') || 'Emergency Services'}
             </h2>
+
+
 
             <div style={{ display: 'grid', gap: '1rem' }}>
               <div style={{
@@ -582,6 +585,8 @@ export default function FamilyDashboard() {
           </div>
         )}
       </div>
+
+
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Navbar from '../components/Navbar';
 import VitalsTracker from '../components/VitalsTracker';
 import MedicationTracker from '../components/MedicationTracker';
 import EnhancedFamilyConnections from '../components/EnhancedFamilyConnections';
@@ -253,8 +252,6 @@ export default function EnhancedDashboard() {
       background: 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)',
       fontFamily: 'Poppins, system-ui, -apple-system, sans-serif'
     }}>
-      <Navbar />
-      
       <div style={{
         maxWidth: '1400px',
         margin: '0 auto',

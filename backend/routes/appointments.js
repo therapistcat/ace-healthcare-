@@ -15,18 +15,6 @@ const router = express.Router();
 
 // Validation middleware
 const validateAppointment = [
-  body('doctorName')
-    .trim()
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Doctor name must be between 2 and 100 characters'),
-  body('specialty')
-    .isIn([
-      'general_medicine', 'cardiology', 'endocrinology', 'neurology',
-      'orthopedics', 'dermatology', 'psychiatry', 'pediatrics',
-      'gynecology', 'ophthalmology', 'ent', 'urology', 'oncology',
-      'gastroenterology', 'pulmonology', 'nephrology', 'rheumatology', 'other'
-    ])
-    .withMessage('Invalid specialty'),
   body('date')
     .isISO8601()
     .withMessage('Valid appointment date is required'),
@@ -34,12 +22,13 @@ const validateAppointment = [
     .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
     .withMessage('Valid time in HH:MM format is required'),
   body('type')
-    .isIn(['consultation', 'follow_up', 'check_up', 'emergency', 'telemedicine', 'procedure', 'lab_review'])
+    .isIn(['consultation', 'followup', 'emergency', 'checkup', 'vaccination'])
     .withMessage('Invalid appointment type'),
-  body('reason')
+  body('notes')
+    .optional()
     .trim()
-    .isLength({ min: 5, max: 500 })
-    .withMessage('Reason must be between 5 and 500 characters')
+    .isLength({ max: 500 })
+    .withMessage('Notes cannot exceed 500 characters')
 ];
 
 // @desc    Get appointments for user
@@ -209,19 +198,18 @@ router.post('/', protect, validateAppointment, async (req, res) => {
 
     const appointmentData = {
       patientId: req.body.patientId || req.user._id,
-      doctorName: sanitizeInput(req.body.doctorName),
-      specialty: req.body.specialty,
+      doctorId: req.body.doctorId,
+      doctorName: req.body.doctorName || 'TBD',
+      specialty: req.body.specialty || 'general_medicine',
       date: new Date(req.body.date),
       time: req.body.time,
       duration: req.body.duration || 30,
       type: req.body.type,
-      reason: sanitizeInput(req.body.reason),
+      reason: sanitizeInput(req.body.notes || req.body.reason || 'General consultation'),
       symptoms: req.body.symptoms || [],
       priority: req.body.priority || 'medium',
+      status: req.body.status || 'pending',
       location: req.body.location || { type: 'clinic' },
-      telemedicine: req.body.telemedicine,
-      medicalInfo: req.body.medicalInfo || {},
-      billing: req.body.billing || {},
       metadata: {
         source: 'app',
         bookedBy: req.user._id,
@@ -518,6 +506,63 @@ router.get('/stats', protect, async (req, res) => {
     console.error('Get appointment stats error:', error);
     res.status(500).json(
       createErrorResponse('Failed to retrieve appointment statistics')
+    );
+  }
+});
+
+// @desc    Update appointment status
+// @route   PATCH /api/appointments/:id
+// @access  Private
+router.patch('/:id', protect, async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json(
+        createErrorResponse('Appointment not found')
+      );
+    }
+
+    // Check if user has permission to update this appointment
+    const isPatient = appointment.patientId.toString() === req.user._id.toString();
+    const isDoctor = appointment.doctorId && appointment.doctorId.toString() === req.user._id.toString();
+
+    if (!isPatient && !isDoctor && req.user.role !== 'doctor') {
+      return res.status(403).json(
+        createErrorResponse('Access denied to update this appointment')
+      );
+    }
+
+    const { status } = req.body;
+
+    if (!status || !['pending', 'confirmed', 'cancelled', 'completed'].includes(status)) {
+      return res.status(400).json(
+        createErrorResponse('Invalid status')
+      );
+    }
+
+    appointment.status = status;
+    appointment.metadata.lastModified = new Date();
+    appointment.metadata.modifiedBy = req.user._id;
+
+    await appointment.save();
+
+    // Populate the appointment data
+    await appointment.populate('patientId', 'name email phone');
+    if (appointment.doctorId) {
+      await appointment.populate('doctorId', 'name email phone');
+    }
+
+    res.json(
+      createSuccessResponse(
+        'Appointment status updated successfully',
+        { appointment }
+      )
+    );
+  } catch (error) {
+    console.error('Update appointment status error:', error);
+    res.status(500).json(
+      createErrorResponse('Failed to update appointment status')
     );
   }
 });

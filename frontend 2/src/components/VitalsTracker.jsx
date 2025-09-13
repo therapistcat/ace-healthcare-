@@ -133,9 +133,10 @@ export default function VitalsTracker() {
         <form onSubmit={handleSubmit}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '1.5rem',
-            marginBottom: '2rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '2rem',
+            marginBottom: '2rem',
+            alignItems: 'start'
           }}>
             {/* Blood Pressure */}
             <div>
@@ -148,7 +149,12 @@ export default function VitalsTracker() {
               }}>
                 🩸 Blood Pressure (mmHg)
               </label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div style={{
+                display: 'flex',
+                gap: '0.5rem',
+                alignItems: 'center',
+                width: '100%'
+              }}>
                 <input
                   type="number"
                   placeholder="Systolic"
@@ -159,10 +165,17 @@ export default function VitalsTracker() {
                     padding: '0.75rem',
                     border: '2px solid #e5e7eb',
                     borderRadius: '8px',
-                    fontSize: '1rem'
+                    fontSize: '1rem',
+                    boxSizing: 'border-box',
+                    minWidth: '0'
                   }}
                 />
-                <span style={{ alignSelf: 'center', color: '#6b7280' }}>/</span>
+                <span style={{
+                  color: '#6b7280',
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
+                  padding: '0 0.25rem'
+                }}>/</span>
                 <input
                   type="number"
                   placeholder="Diastolic"
@@ -173,7 +186,9 @@ export default function VitalsTracker() {
                     padding: '0.75rem',
                     border: '2px solid #e5e7eb',
                     borderRadius: '8px',
-                    fontSize: '1rem'
+                    fontSize: '1rem',
+                    boxSizing: 'border-box',
+                    minWidth: '0'
                   }}
                 />
               </div>

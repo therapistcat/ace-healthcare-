@@ -1,5 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
-import { Camera } from 'react-camera-pro';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
 
 export default function ImageRecognition({ type, onResult, onClose }) {
@@ -8,8 +7,10 @@ export default function ImageRecognition({ type, onResult, onClose }) {
   const [extractedText, setExtractedText] = useState('');
   const [progress, setProgress] = useState(0);
   const [useCamera, setUseCamera] = useState(true);
-  const camera = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
+  const [stream, setStream] = useState(null);
 
   const getTitle = () => {
     switch (type) {
@@ -18,6 +19,47 @@ export default function ImageRecognition({ type, onResult, onClose }) {
       case 'prescription': return '📝 Prescription Reader';
       case 'verification': return '📸 Verification Photo';
       default: return '📷 Image Recognition';
+    }
+  };
+
+  const startCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      });
+      setStream(mediaStream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      setUseCamera(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0);
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        setCapturedImage(url);
+        stopCamera();
+        processImage(blob);
+      }, 'image/jpeg', 0.8);
     }
   };
 
@@ -36,12 +78,11 @@ export default function ImageRecognition({ type, onResult, onClose }) {
     }
   };
 
-  const capturePhoto = useCallback(() => {
-    if (camera.current) {
-      const imageSrc = camera.current.takePhoto();
-      setCapturedImage(imageSrc);
-      processImage(imageSrc);
-    }
+  // Cleanup camera on unmount
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
   }, []);
 
   const handleFileUpload = (event) => {
@@ -311,38 +352,60 @@ export default function ImageRecognition({ type, onResult, onClose }) {
                   height: '300px',
                   borderRadius: '8px',
                   overflow: 'hidden',
-                  marginBottom: '1rem'
+                  marginBottom: '1rem',
+                  background: '#000'
                 }}>
-                  <Camera
-                    ref={camera}
-                    aspectRatio={4/3}
-                    numberOfCamerasCallback={() => {}}
-                    errorMessages={{
-                      noCameraAccessible: 'No camera accessible. Please allow camera access.',
-                      permissionDenied: 'Camera permission denied. Please allow camera access.',
-                      switchCamera: 'Switch camera not supported.',
-                      canvas: 'Canvas not supported.'
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
                     }}
                   />
+                  <canvas
+                    ref={canvasRef}
+                    style={{ display: 'none' }}
+                  />
                 </div>
-                <button
-                  onClick={capturePhoto}
-                  disabled={isProcessing}
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                    color: 'white',
-                    fontWeight: '600',
-                    fontSize: '1.1rem',
-                    cursor: isProcessing ? 'not-allowed' : 'pointer',
-                    opacity: isProcessing ? 0.6 : 1
-                  }}
-                >
-                  📸 Capture Photo
-                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button
+                    onClick={startCamera}
+                    style={{
+                      background: '#6b7280',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '0.75rem 1.5rem',
+                      fontSize: '0.9rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      flex: 1
+                    }}
+                  >
+                    📹 Start Camera
+                  </button>
+                  <button
+                    onClick={capturePhoto}
+                    disabled={isProcessing}
+                    style={{
+                      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '0.75rem 1.5rem',
+                      fontSize: '0.9rem',
+                      fontWeight: '600',
+                      cursor: isProcessing ? 'not-allowed' : 'pointer',
+                      opacity: isProcessing ? 0.6 : 1,
+                      flex: 2
+                    }}
+                  >
+                    📸 Capture Photo
+                  </button>
+                </div>
               </div>
             ) : (
               <div>
